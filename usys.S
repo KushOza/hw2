@@ -30,4 +30,7 @@ SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(halt)
+<<<<<<< HEAD
 SYSCALL(register_signal_handler)
+=======
+>>>>>>> origin/sp16-hw1-start

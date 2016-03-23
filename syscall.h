@@ -21,4 +21,7 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_halt   22
+<<<<<<< HEAD
 #define SYS_register_signal_handler 23
+=======
+>>>>>>> origin/sp16-hw1-start

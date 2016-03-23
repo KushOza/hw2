@@ -102,6 +102,7 @@ sys_halt(void)
     outw(0xB004, 0x2000);
   return 0;
 }
+<<<<<<< HEAD
 
 int sys_register_signal_handler(void)
 {
@@ -121,3 +122,5 @@ int sys_register_signal_handler(void)
 	}
         return 0;
 }
+=======
+>>>>>>> origin/sp16-hw1-start

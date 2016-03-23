@@ -173,6 +173,14 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_shutdown\
+<<<<<<< HEAD
+=======
+#	_stage1_sigfpe\
+#	_stage1_sigalrm\
+#	_stage1_nested\
+#	_stage2\
+#	_stage3\
+>>>>>>> origin/sp16-hw1-start
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -273,7 +281,45 @@ tar:
 	rm -rf /tmp/xv6
 	mkdir -p /tmp/xv6
 	cp dist/* dist/.gdbinit.tmpl /tmp/xv6
-	(cd /tmp; tar cf - xv6) | gzip >xv6-rev5.tar.gz
+	(cd /tmp; tar cf - xv6) | gzip >xv6-rev9.tar.gz  # the next one will be 9 (6/27/15)
+
+submit-help:
+	@echo "This makefile target is used to convieniently package your modifications for grading"
+	@echo "Type \"make submit netids=NETID1-NETID2 name=SECTION_NAME base=BASE_BRANCH\" to create a tarball."
+
+submit:
+ifndef netids
+	@echo "You must specify your netids, please type \"make submit-help\" for more details"
+else
+ifndef name
+	@echo "You must specify a name, please type \"make submit-help\" for more details"
+else
+ifndef base
+	@echo "You must specify a base, please type \"make submit-help\" for more details"
+else
+	@./package_patches.sh $(netids) $(name) $(base)
+endif
+endif
+endif
+
+submit-help:
+	@echo "This makefile target is used to convieniently package your modifications for grading"
+	@echo "Type \"make submit netids=NETID1-NETID2 name=SECTION_NAME base=BASE_BRANCH\" to create a tarball."
+
+submit:
+ifndef netids
+	@echo "You must specify your netids, please type \"make submit-help\" for more details"
+else
+ifndef name
+	@echo "You must specify a name, please type \"make submit-help\" for more details"
+else
+ifndef base
+	@echo "You must specify a base, please type \"make submit-help\" for more details"
+else
+	@./package_patches.sh $(netids) $(name) $(base)
+endif
+endif
+endif
 
 submit-help:
 	@echo "This makefile target is used to convieniently package your modifications for grading"
