@@ -173,14 +173,11 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_shutdown\
-<<<<<<< HEAD
-=======
 #	_stage1_sigfpe\
 #	_stage1_sigalrm\
 #	_stage1_nested\
 #	_stage2\
 #	_stage3\
->>>>>>> origin/sp16-hw1-start
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
