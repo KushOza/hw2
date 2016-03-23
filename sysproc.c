@@ -105,5 +105,19 @@ sys_halt(void)
 
 int sys_register_signal_handler(void)
 {
+	//signum is either int or singinfo
+	signinfo_t* signum;	
+	sighandler_t handler;
+
+	cprintf("yay got here");
+
+	if (argint(0, signum) < 0)
+	{
+		cprintf("something bad happened.");
+	}
+	else if (argint(1, (int*)handler) < 0)
+	{
+ 		cprintf("oh boy");
+	}
         return 0;
 }

@@ -103,3 +103,8 @@ memmove(void *vdst, void *vsrc, int n)
     *dst++ = *src++;
   return vdst;
 }
+
+int signal(int signum, sighandler_t handler)
+{
+	register_signal_handler(signum, handler);
+}
