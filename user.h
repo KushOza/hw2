@@ -1,4 +1,6 @@
-struct stat;
+#include "signal.h"
+
+truct stat;
 struct rtcdate;
 
 // system calls
@@ -38,3 +40,5 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+int signal(int signum, sighandler_t handler);
+int alarm(int seconds);

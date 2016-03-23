@@ -106,5 +106,10 @@ memmove(void *vdst, void *vsrc, int n)
 
 int signal(int signum, sighandler_t handler)
 {
-	register_signal_handler(signum, handler);
+	return register_signal_handler(signum, handler);
+}
+
+int alarm(int seconds)
+{
+	return sigalrm_handler(seconds);
 }

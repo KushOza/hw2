@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "signal.h"
 
 int
 sys_fork(void)
@@ -103,7 +104,7 @@ sys_halt(void)
   return 0;
 }
 
-int sys_register_signal_handler(void)
+int sys_sigfpe_handler(void)
 {
 	//signum is either int or singinfo
 	signinfo_t* signum;	
@@ -120,4 +121,9 @@ int sys_register_signal_handler(void)
  		cprintf("oh boy");
 	}
         return 0;
+}
+
+int sys_sigalrm_handler(void)
+{
+
 }
