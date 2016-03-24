@@ -100,7 +100,7 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_halt(void);
-extern int sys_sigfpe_handler(void);
+extern int sys_register_signal_handler(void);
 extern int sys_sigalrm_handler(void);
 
 static int (*syscalls[])(void) = {
@@ -126,7 +126,7 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_halt]    sys_halt,
-[SYS_sigfpe_handler]   sys_sigfpe_handler,
+[SYS_register_signal_handler]	sys_register_signal_handler,
 [SYS_sigalrm_handler]	sys_sigalrm_handler,
 };
 

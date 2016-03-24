@@ -70,6 +70,9 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  p->signalhandlers[0] = -1;	//sigfpe doesn't exist
+  p->signalhandlers[1] = -1;	//sigalrm doesn't exist
+  p->alarmCounter = 0;
   return p;
 }
 

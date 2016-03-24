@@ -104,26 +104,35 @@ sys_halt(void)
   return 0;
 }
 
-int sys_sigfpe_handler(void)
+int sys_register_signal_handler(void)
 {
-	//signum is either int or singinfo
-	signinfo_t* signum;	
-	sighandler_t handler;
-
-	cprintf("yay got here");
-
-	if (argint(0, signum) < 0)
+	int signum = 0;
+	int handler = 0;
+	if (argint(0, &signum) < 0 || argint(1, &handler) < 0)
 	{
-		cprintf("something bad happened.");
+		cprintf("Something bad happened\n");
+		return -1;
 	}
-	else if (argint(1, (int*)handler) < 0)
+	//cprintf("The value of signum is %d\n", signum);
+	if (signum == SIGFPE)
 	{
- 		cprintf("oh boy");
+		//cprintf("Got dat sigfpe boi\n");
+		proc->signalhandlers[0] = handler;
 	}
-        return 0;
+	if (signum == SIGALRM)
+	{
+		//cprintf("Got dat sigalrm boi\n");
+		proc->signalhandlers[1] = handler;
+	}
+	return signum;
 }
 
 int sys_sigalrm_handler(void)
 {
-
+	int alarmTime = 0;
+	if (argint(0, &alarmTime) < 0)
+	    return -1;
+	alarmTime = alarmTime*1000;
+	proc->alarmCounter = alarmTime;
+	return proc->alarmCounter;
 }

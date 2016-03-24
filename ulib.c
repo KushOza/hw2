@@ -4,6 +4,9 @@
 #include "user.h"
 #include "x86.h"
 
+int register_signal_handler();
+int sigalrm_handler();
+
 char*
 strcpy(char *s, char *t)
 {
@@ -113,3 +116,4 @@ int alarm(int seconds)
 {
 	return sigalrm_handler(seconds);
 }
+

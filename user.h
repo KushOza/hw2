@@ -1,6 +1,6 @@
 #include "signal.h"
 
-truct stat;
+struct stat;
 struct rtcdate;
 
 // system calls

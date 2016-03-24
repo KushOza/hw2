@@ -7,6 +7,7 @@
 #include "x86.h"
 #include "traps.h"
 #include "spinlock.h"
+#include "signal.h"
 
 // Interrupt descriptor table (shared by all CPUs).
 struct gatedesc idt[256];
@@ -45,9 +46,39 @@ trap(struct trapframe *tf)
       exit();
     return;
   }
-
   switch(tf->trapno){
+  case T_DIVIDE:
+	  if (proc->signalhandlers[0] > -1)	//confirm there is a sigfpe handler
+	  {
+		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
+		  sigfpeInfo.signum = SIGFPE;
+		  *((siginfo_t*)(proc->tf->esp - 4)) = sigfpeInfo;
+		  proc->tf->esp = proc->tf->esp - 8;
+		  proc->tf->eip = (uint) proc->signalhandlers[0];
+		  break;
+	  }
+	  //otherwise copypaste default message and print
+	  cprintf("pid %d %s: trap %d err %d on cpu %d "
+	              "eip 0x%x addr 0x%x--kill proc\n",
+	              proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip,
+	              rcr2());
+	  proc->killed = 1;
+	  exit();
   case T_IRQ0 + IRQ_TIMER:
+	  if (proc && proc->alarmCounter > 0)
+	  {
+		  proc->alarmCounter -= 25;
+		  if (proc->alarmCounter <= 0)
+		  {
+			  proc->alarmCounter = 0;
+			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
+			  sigalrmInfo.signum = SIGALRM;
+			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
+			  proc->tf->esp = proc->tf->esp - 8;
+			  proc->tf->eip = (uint) proc->signalhandlers[1];
+			  break;
+		  }
+	  }
     if(cpu->id == 0){
       acquire(&tickslock);
       ticks++;
