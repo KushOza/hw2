@@ -65,10 +65,10 @@ trap(struct trapframe *tf)
 	  proc->killed = 1;
 	  exit();
   case T_IRQ0 + IRQ_TIMER:
-	  if (proc && proc->alarmCounter > 0)
-	  {
+	 if (proc && proc->alarmCounter > 0)
+	 {
 		  proc->alarmCounter -= 25;
-		  if (proc->alarmCounter <= 0)
+		  if (proc->alarmCounter == 0)
 		  {
 			  proc->alarmCounter = 0;
 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
