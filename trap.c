@@ -15,6 +15,8 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
+struct proc* getProc(int index);
+
 void
 tvinit(void)
 {
@@ -46,9 +48,10 @@ trap(struct trapframe *tf)
       exit();
     return;
   }
+  //int i;
   switch(tf->trapno){
   case T_DIVIDE:
-	  if (proc->signalhandlers[0] > -1)	//confirm there is a sigfpe handler
+	  if (proc->signalhandlers[SIGFPE] > -1)	//confirm there is a sigfpe handler
 	  {
 		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
 		  sigfpeInfo.signum = SIGFPE;
@@ -65,20 +68,27 @@ trap(struct trapframe *tf)
 	  proc->killed = 1;
 	  exit();
   case T_IRQ0 + IRQ_TIMER:
-	 if (proc && proc->alarmCounter > 0)
-	 {
-		  proc->alarmCounter -= 25;
-		  if (proc->alarmCounter == 0)
-		  {
-			  proc->alarmCounter = 0;
-			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
-			  sigalrmInfo.signum = SIGALRM;
-			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
-			  proc->tf->esp = proc->tf->esp - 8;
-			  proc->tf->eip = (uint) proc->signalhandlers[1];
-			  break;
-		  }
-	  }
+  /*
+  	 for (i = 0; i < NPROC; i++)
+  	 {
+  		 struct proc* currentProc = getProc(i);
+  		 if (currentProc->signalhandlers[SIGALRM] > -1)
+  		 {
+  			 if (currentProc && currentProc->alarmCounter > 0)
+			 {
+				  currentProc->alarmCounter--;
+				  if (currentProc->alarmCounter == 0)
+				  {
+					  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
+					  sigalrmInfo.signum = SIGALRM;
+					  *((siginfo_t*)(currentProc->tf->esp - 4)) = sigalrmInfo;
+					  currentProc->tf->esp = currentProc->tf->esp - 8;
+					  currentProc->tf->eip = (uint) currentProc->signalhandlers[1];
+				  }
+			  }
+  		 }
+  	 }
+*/
     if(cpu->id == 0){
       acquire(&tickslock);
       ticks++;
@@ -139,4 +149,24 @@ trap(struct trapframe *tf)
   // Check if the process has been killed since we yielded
   if(proc && proc->killed && (tf->cs&3) == DPL_USER)
     exit();
+  //for (i = 0; i < NPROC; i++)
+  //{
+	  //struct proc* currentProc = getProc(i);
+	  if (proc && proc->alarmCounter > 0)
+	  {
+	 	 if (proc->signalhandlers[SIGALRM] > -1)
+	 	 {
+	 		  proc->alarmCounter -= 25;
+	 		  if (proc->alarmCounter == 0)
+	 		  {
+	 			  cprintf("reached here\n");
+	 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
+	 			  sigalrmInfo.signum = SIGALRM;
+	 			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
+	 			  proc->tf->esp = proc->tf->esp - 8;
+	 			  proc->tf->eip = (uint) proc->signalhandlers[1];
+	 		  }
+	 	 }
+	  }
+  //}
 }
