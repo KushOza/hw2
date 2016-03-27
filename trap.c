@@ -157,7 +157,7 @@ trap(struct trapframe *tf)
 	 	 if (proc->signalhandlers[SIGALRM] > -1)
 	 	 {
 	 		  proc->alarmCounter -= 25;
-	 		  if (proc->alarmCounter == 0)
+	 		  if (proc->alarmCounter <= 0)
 	 		  {
 	 			  //cprintf("reached here\n");
 	 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
