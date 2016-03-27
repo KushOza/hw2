@@ -55,10 +55,21 @@ trap(struct trapframe *tf)
 	  {
 		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
 		  sigfpeInfo.signum = SIGFPE;
+		  /*
 		  *((siginfo_t*)(proc->tf->esp)) = sigfpeInfo;
 		  proc->tf->esp -= 4;
 		  proc->tf->eip = (uint) proc->signalhandlers[SIGFPE];
 		  break;
+		  */
+		  *((uint*)(proc->tf->esp - 4)) = proc->tf->eip;
+		 proc->tf->eip = (uint) proc->signalhandlers[SIGFPE];
+		 *((uint*)(proc->tf->esp - 8)) = proc->tf->edx;
+		 *((uint*)(proc->tf->esp - 12)) = proc->tf->ecx;
+		 *((uint*)(proc->tf->esp - 16)) = proc->tf->eax;
+		 *((siginfo_t*)(proc->tf->esp - 20)) = sigfpeInfo;
+		 *((uint*)(proc->tf->esp - 24)) = proc->trampolineVar;
+		 proc->tf->esp -= 24;
+		 break;
 	  }
 	  //otherwise copypaste default message and print
 	  cprintf("pid %d %s: trap %d err %d on cpu %d "
