@@ -55,7 +55,7 @@ trap(struct trapframe *tf)
 	  {
 		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
 		  sigfpeInfo.signum = SIGFPE;
-		  *((siginfo_t*)(proc->tf->esp - 4)) = sigfpeInfo;
+		  *((siginfo_t*)(proc->tf->esp)) = sigfpeInfo;
 		  proc->tf->esp -= 4;
 		  proc->tf->eip = (uint) proc->signalhandlers[0];
 		  break;
@@ -136,19 +136,26 @@ trap(struct trapframe *tf)
 	 	 if (proc->signalhandlers[SIGALRM] > -1)
 	 	 {
 	 		  proc->alarmCounter -= 25;
-	 		  if (proc->alarmCounter == 0)
+	 		  if (proc->alarmCounter <= 0)
 	 		  {
 	 			  //cprintf("reached here\n");
 	 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
 	 			  sigalrmInfo.signum = SIGALRM;
 	 			  /*
-	 			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
-	 			  proc->tf->esp = proc->tf->esp - 8;
+	 			  *((siginfo_t*)(proc->tf->esp)) = sigalrmInfo;
+	 			  proc->tf->esp -= 4;
 	 			  proc->tf->eip = (uint) proc->signalhandlers[SIGALRM];
 	 			  */
 
 	 			 //push old eip, then registers, then siginfo, then trampoline, set eip to signal
-
+	 			 *((uint*)(proc->tf->esp)) = proc->tf->eip;
+				  proc->tf->eip = (uint) proc->signalhandlers[SIGALRM];
+				  *((uint*)(proc->tf->esp - 4)) = proc->tf->edx;
+				  *((uint*)(proc->tf->esp - 8)) = proc->tf->ecx;
+				  *((uint*)(proc->tf->esp - 12)) = proc->tf->eax;
+				  *((siginfo_t*)(proc->tf->esp - 16)) = sigalrmInfo;
+				  *((uint*)(proc->tf->esp - 20)) = proc->trampolineVar;
+				  proc->tf->esp -= 24;
 	 		  }
 	 	 }
 	  }
