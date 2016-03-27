@@ -122,7 +122,7 @@ void trampolineFunc(void)
 	__asm__(
 	    "trampoline:\n\t"
 	    "movl %ebp,%esp\n\t"
-		"movl %ebp,%eax\n\t"
+		"movl 0x0(%ebp),%eax\n\t"
 		"movl 0x4(%ebp),%ecx\n\t"
 		"movl 0x8(%ebp),%edx\n\t"
 		"add $0x0c,%ebp\n\t"

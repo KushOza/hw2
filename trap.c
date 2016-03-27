@@ -148,13 +148,13 @@ trap(struct trapframe *tf)
 	 			  */
 
 	 			 //push old eip, then registers, then siginfo, then trampoline, set eip to signal
-	 			 *((uint*)(proc->tf->esp)) = proc->tf->eip;
+	 			 *((uint*)(proc->tf->esp - 4)) = proc->tf->eip;
 				  proc->tf->eip = (uint) proc->signalhandlers[SIGALRM];
-				  *((uint*)(proc->tf->esp - 4)) = proc->tf->edx;
-				  *((uint*)(proc->tf->esp - 8)) = proc->tf->ecx;
-				  *((uint*)(proc->tf->esp - 12)) = proc->tf->eax;
-				  *((siginfo_t*)(proc->tf->esp - 16)) = sigalrmInfo;
-				  *((uint*)(proc->tf->esp - 20)) = proc->trampolineVar;
+				  *((uint*)(proc->tf->esp - 8)) = proc->tf->edx;
+				  *((uint*)(proc->tf->esp - 12)) = proc->tf->ecx;
+				  *((uint*)(proc->tf->esp - 16)) = proc->tf->eax;
+				  *((siginfo_t*)(proc->tf->esp - 20)) = sigalrmInfo;
+				  *((uint*)(proc->tf->esp - 24)) = proc->trampolineVar;
 				  proc->tf->esp -= 24;
 	 		  }
 	 	 }
