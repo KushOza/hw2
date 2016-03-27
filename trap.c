@@ -55,12 +55,9 @@ trap(struct trapframe *tf)
 	  {
 		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
 		  sigfpeInfo.signum = SIGFPE;
-		  /*
 		  *((siginfo_t*)(proc->tf->esp - 4)) = sigfpeInfo;
-		  proc->tf->esp = proc->tf->esp - 8;
+		  proc->tf->esp -= 4;
 		  proc->tf->eip = (uint) proc->signalhandlers[0];
-		  */
-		  //need to access different elements of proc->tf->esp
 		  break;
 	  }
 	  //otherwise copypaste default message and print
@@ -144,10 +141,14 @@ trap(struct trapframe *tf)
 	 			  //cprintf("reached here\n");
 	 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
 	 			  sigalrmInfo.signum = SIGALRM;
-	 			  //*((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
-	 			  //proc->tf->esp = proc->tf->esp - 8;
-	 			  //proc->tf->eip = (uint) proc->signalhandlers[SIGALRM];
-	 			  //need to access different elements of proc->tf->esp
+	 			  /*
+	 			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
+	 			  proc->tf->esp = proc->tf->esp - 8;
+	 			  proc->tf->eip = (uint) proc->signalhandlers[SIGALRM];
+	 			  */
+
+	 			 //push old eip, then registers, then siginfo, then trampoline, set eip to signal
+
 	 		  }
 	 	 }
 	  }
