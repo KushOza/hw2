@@ -155,7 +155,7 @@ trap(struct trapframe *tf)
 				 *((uint*)(proc->tf->esp - 16)) = proc->tf->eax;
 				 *((siginfo_t*)(proc->tf->esp - 20)) = sigalrmInfo;
 				 *((uint*)(proc->tf->esp - 24)) = proc->trampolineVar;
-				 proc->tf->esp -= 28;
+				 proc->tf->esp -= 24;
 	 		  }
 	 	 }
 	  }

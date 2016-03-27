@@ -117,13 +117,14 @@ int alarm(int seconds)
 	return sigalrm_handler(seconds);
 }
 
+//edx, then ecx, then eax
 void trampolineFunc(void)
 {
 	__asm__(
 	    "trampoline:\n\t"
-		"movl 0x08(%ebp),%eax\n\t"
+		"movl 0x08(%ebp),%edx\n\t"
 		"movl 0x0c(%ebp),%ecx\n\t"
-		"movl 0x10(%ebp),%edx\n\t"
+		"movl 0x10(%ebp),%eax\n\t"
 		"add $0x14,%ebp\n\t"
 		"movl %ebp,%esp\n\t"
 	    "ret\n\t"
