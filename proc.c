@@ -73,6 +73,7 @@ found:
   p->signalhandlers[0] = -1;	//sigfpe doesn't exist
   p->signalhandlers[1] = -1;	//sigalrm doesn't exist
   p->alarmCounter = 0;
+  p->trampolineVar = 0;
   return p;
 }
 
@@ -468,6 +469,7 @@ procdump(void)
   }
 }
 
+//Get proc at selectd index
 struct proc* getProc(int index)
 {
 	return &ptable.proc[index];

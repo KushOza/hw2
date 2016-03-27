@@ -108,7 +108,8 @@ int sys_register_signal_handler(void)
 {
 	int signum = 0;
 	int handler = 0;
-	if (argint(0, &signum) < 0 || argint(1, &handler) < 0)
+	uint trampoline = 0;
+	if (argint(0, &signum) < 0 || argint(1, &handler) < 0 || argint(2, (int*)&trampoline) < 0)
 	{
 		cprintf("Something bad happened\n");
 		return -1;
@@ -124,6 +125,7 @@ int sys_register_signal_handler(void)
 		//cprintf("Got dat sigalrm boi\n");
 		proc->signalhandlers[1] = handler;
 	}
+	proc->trampolineVar = trampoline;
 	return signum;
 }
 

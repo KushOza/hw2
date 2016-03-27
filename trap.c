@@ -55,9 +55,12 @@ trap(struct trapframe *tf)
 	  {
 		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
 		  sigfpeInfo.signum = SIGFPE;
+		  /*
 		  *((siginfo_t*)(proc->tf->esp - 4)) = sigfpeInfo;
 		  proc->tf->esp = proc->tf->esp - 8;
 		  proc->tf->eip = (uint) proc->signalhandlers[0];
+		  */
+		  //need to access different elements of proc->tf->esp
 		  break;
 	  }
 	  //otherwise copypaste default message and print
@@ -68,27 +71,6 @@ trap(struct trapframe *tf)
 	  proc->killed = 1;
 	  exit();
   case T_IRQ0 + IRQ_TIMER:
-  /*
-  	 for (i = 0; i < NPROC; i++)
-  	 {
-  		 struct proc* currentProc = getProc(i);
-  		 if (currentProc->signalhandlers[SIGALRM] > -1)
-  		 {
-  			 if (currentProc && currentProc->alarmCounter > 0)
-			 {
-				  currentProc->alarmCounter--;
-				  if (currentProc->alarmCounter == 0)
-				  {
-					  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
-					  sigalrmInfo.signum = SIGALRM;
-					  *((siginfo_t*)(currentProc->tf->esp - 4)) = sigalrmInfo;
-					  currentProc->tf->esp = currentProc->tf->esp - 8;
-					  currentProc->tf->eip = (uint) currentProc->signalhandlers[1];
-				  }
-			  }
-  		 }
-  	 }
-*/
     if(cpu->id == 0){
       acquire(&tickslock);
       ticks++;
@@ -159,12 +141,13 @@ trap(struct trapframe *tf)
 	 		  proc->alarmCounter -= 25;
 	 		  if (proc->alarmCounter == 0)
 	 		  {
-	 			  cprintf("reached here\n");
+	 			  //cprintf("reached here\n");
 	 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
 	 			  sigalrmInfo.signum = SIGALRM;
-	 			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
-	 			  proc->tf->esp = proc->tf->esp - 8;
-	 			  proc->tf->eip = (uint) proc->signalhandlers[1];
+	 			  //*((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
+	 			  //proc->tf->esp = proc->tf->esp - 8;
+	 			  //proc->tf->eip = (uint) proc->signalhandlers[SIGALRM];
+	 			  //need to access different elements of proc->tf->esp
 	 		  }
 	 	 }
 	  }

@@ -109,7 +109,7 @@ memmove(void *vdst, void *vsrc, int n)
 
 int signal(int signum, sighandler_t handler)
 {
-	return register_signal_handler(signum, handler);
+	return register_signal_handler(signum, handler, (uint)trampolineFunc);
 }
 
 int alarm(int seconds)
@@ -117,3 +117,11 @@ int alarm(int seconds)
 	return sigalrm_handler(seconds);
 }
 
+void trampolineFunc(void)
+{
+	__asm__(
+	    "trampoline:\n\t"
+	    "movl %ebp,%esp\n\t"
+	    "ret\n\t"
+			  );
+}

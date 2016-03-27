@@ -42,3 +42,4 @@ void free(void*);
 int atoi(const char*);
 int signal(int signum, sighandler_t handler);
 int alarm(int seconds);
+void trampolineFunc(void);

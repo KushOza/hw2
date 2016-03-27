@@ -68,6 +68,7 @@ struct proc {
   char name[16];               // Process name (debugging)
   int signalhandlers[2];	   // For SIGFPE (0) and SIGALRM (1)
   int alarmCounter;			   // Alarm counter
+  uint trampolineVar;		   // For trampoline
 };
 
 // Process memory is laid out contiguously, low addresses first:
