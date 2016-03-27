@@ -55,8 +55,8 @@ trap(struct trapframe *tf)
 	  {
 		  siginfo_t sigfpeInfo;			//set new siginfo for SIGFPE
 		  sigfpeInfo.signum = SIGFPE;
-		  *((siginfo_t*)(proc->tf->esp - 4)) = sigfpeInfo;
-		  proc->tf->esp = proc->tf->esp - 8;
+		  *((siginfo_t*)(proc->tf->esp)) = sigfpeInfo;
+		  proc->tf->esp -= 4;
 		  proc->tf->eip = (uint) proc->signalhandlers[0];
 		  break;
 	  }
@@ -159,11 +159,11 @@ trap(struct trapframe *tf)
 	 		  proc->alarmCounter -= 25;
 	 		  if (proc->alarmCounter == 0)
 	 		  {
-	 			  cprintf("reached here\n");
+	 			  //cprintf("reached here\n");
 	 			  siginfo_t sigalrmInfo;			//set new siginfo for SIGALRM
 	 			  sigalrmInfo.signum = SIGALRM;
-	 			  *((siginfo_t*)(proc->tf->esp - 4)) = sigalrmInfo;
-	 			  proc->tf->esp = proc->tf->esp - 8;
+	 			  *((siginfo_t*)(proc->tf->esp)) = sigalrmInfo;
+	 			  proc->tf->esp -= 4;
 	 			  proc->tf->eip = (uint) proc->signalhandlers[1];
 	 		  }
 	 	 }
