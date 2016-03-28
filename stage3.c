@@ -9,23 +9,15 @@ static float time = 0.0f;
 
 void handle_signal(siginfo_t info)
 {
-	printf(1, "Caught signal %d...\n", info.signum);
-	if (info.signum == SIGFPE)
-		printf(1, "TEST PASSED\n");
-	else
-		printf(1, "TEST FAILED: wrong signal sent.\n");
-
-	if(trapCount < 10.0f){
+	if(trapCount < 1000000.0){
 		trapCount=trapCount+1.0;
-		printf(1,"%d",trapCount);
 	}
 	else{
 		__asm__(
-			"movl %eax, %esp\n\t"
-			"add 4, %esp\n\t"
+			"movl %eax, %ebp\n\t"
+			"sub %esp, 4\n\t"
 			"jmp %esp\n\t"
 			);
-		printf(1,"else");
 	}
 }
 
@@ -38,6 +30,7 @@ int main(int argc, char *argv[])
 	x = x/y;
 
 	time = uptime();
+
 	float avg = trapCount/time;
 
 	printf(1, "Traps Performed: %d\n", trapCount);
