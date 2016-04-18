@@ -74,6 +74,8 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   struct mymutex mutexTable[32]; // mutex table
+  void *retval;                 // return value
+  char *ustack;                // Bottom of user stack for this process
 };
 
 // Process memory is laid out contiguously, low addresses first:
