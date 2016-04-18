@@ -8,7 +8,9 @@ typedef struct pthread_t{
 
 } pthread_t;
 
-typedef struct pthread_t pthread_t;
+typedef struct pthread_attr_t{
+	
+} pthread_attr_t;
 
 #endif
 

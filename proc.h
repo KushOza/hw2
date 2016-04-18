@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 #include "spinlock.h"
-=======
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
 // Segments in proc->gdt.
 #define NSEGS     7
 
