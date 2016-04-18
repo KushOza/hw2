@@ -99,12 +99,10 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_halt(void);
-<<<<<<< HEAD
 extern int sys_clone(void);
 extern int sys_join(void);
 extern int sys_texit(void);
-=======
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
+
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -129,12 +127,9 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_halt]    sys_halt,
-<<<<<<< HEAD
 [SYS_clone]   sys_clone,
 [SYS_join]    sys_join,
 [SYS_texit]   sys_texit,
-=======
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
 };
 
 void

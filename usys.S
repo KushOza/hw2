@@ -30,9 +30,7 @@ SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(halt)
-<<<<<<< HEAD
 SYSCALL(clone)
 SYSCALL(join)
 SYSCALL(texit)
-=======
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
+

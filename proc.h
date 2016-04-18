@@ -25,11 +25,8 @@ extern int ncpu;
 
 struct mymutex {
   int flag;
-<<<<<<< HEAD
   struct spinlock lock;
-=======
-  //lock_t lock;
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
+
   //cond_t c;
 };
 // Per-CPU variables, holding pointers to the
@@ -79,11 +76,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-<<<<<<< HEAD
-  struct mymutex mutexTable[32]; // mutx table
-=======
   struct mymutex mutexTable[32]; // mutex table
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
 };
 
 // Process memory is laid out contiguously, low addresses first:

@@ -21,9 +21,6 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_halt   22
-<<<<<<< HEAD
 #define SYS_clone  23
 #define SYS_join   24
 #define SYS_texit  25
-=======
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12

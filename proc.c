@@ -466,21 +466,13 @@ procdump(void)
 
 int clone(void *(*func) (void *), void *arg, void *stack){
   int i, pid;
-<<<<<<< HEAD
   struct proc *np; 
-=======
-  struct proc *np;
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
 
   // Allocate process.
   if((np = allocproc()) == 0)
     return -1;
     // Copy process state from p.
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
   if((np->pgdir = copyuvm(proc->pgdir, proc->sz)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
@@ -500,38 +492,21 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   np->cwd = idup(proc->cwd);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
-<<<<<<< HEAD
- 
-=======
 
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
   pid = np->pid;
 
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
   release(&ptable.lock);
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
   return pid;
 
 }
 
 int join(int pid, void **stack, void **retval){
-<<<<<<< HEAD
-  
-}
-
-int texit(void){
-  
-=======
 
 }
 
 int texit(void){
-
->>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
+  
 }
