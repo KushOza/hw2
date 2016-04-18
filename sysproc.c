@@ -6,7 +6,11 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+<<<<<<< HEAD
 
+=======
+//helo world
+>>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
 int
 sys_fork(void)
 {
@@ -112,5 +116,10 @@ int sys_join(void){
 }
 
 int sys_texit(void){
+<<<<<<< HEAD
   
 }
+=======
+
+}
+>>>>>>> 4ea29fc72969f8654b03e3daf1a041f777962f12
