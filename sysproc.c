@@ -7,6 +7,8 @@
 #include "mmu.h"
 #include "proc.h"
 
+void texit(void* var);
+
 int
 sys_fork(void)
 {
@@ -116,7 +118,7 @@ int sys_clone(void){
     return -1;
     
   cprintf("The value of func: %d arg: %d stack: %d\n", func, arg, stack);
-
+  //texit((void*) 0);
   return clone((void *) func, (void *) arg, (void *) stack);
 }
 

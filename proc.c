@@ -8,6 +8,8 @@
 #include "spinlock.h"
 #include <stdio.h>
 
+//void texit(void* retval);
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -20,6 +22,14 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
+
+
+//UNFINISHED
+int texit(void *retval){
+  cprintf("hello world");
+  proc->retval = retval;
+  exit();
+}
 
 void
 pinit(void)
@@ -483,12 +493,12 @@ int clone(void *(*func) (void *), void *arg, void *stack){
     return -1;
   }
   */
-  
+  np->isThread = 1;
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
-  np->context = proc->context;
-  np->pgdir = np->parent->pgdir;
+  //np->context = proc->context;
+  np->pgdir = proc->pgdir;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -499,11 +509,12 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   //assign user stack
   uint decr = 0;
 
-  np->ustack = (char*) stack;
+  np->ustack = stack;
   decr+=sizeof(uint);
-  *((uint*)(np->tf->esp-decr)) = 0xffffffff;
+  np->tf->esp = (uint) ((char*)(stack) + userStackSize);
+  *((uint*)(np->tf->esp-decr)) = (uint) arg;
   decr+=sizeof(uint);
-  *((uint*)(np->tf->esp-decr))= (uint) arg;
+  *((uint*)(np->tf->esp-decr))= 0xffffffff;
   np->tf->esp-=decr;
 
 
@@ -520,6 +531,7 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   acquire(&ptable.lock);
   np->state = RUNNABLE;
   release(&ptable.lock);
+  //texit();
   return pid;
 
 }
@@ -533,7 +545,7 @@ int join(int pid, void **stack, void **retval){
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != proc)
+      if(p->parent != proc || p->isThread)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -565,11 +577,4 @@ int join(int pid, void **stack, void **retval){
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
 
-}
-
-//UNFINISHED
-int texit(void *retval){
-  cprintf("hello world");
-  proc->retval = retval;
-  exit();
 }
