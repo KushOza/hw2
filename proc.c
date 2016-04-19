@@ -494,13 +494,17 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   np->tf->eax = 0;
 
   //set eip to function passed in header
-  np->tf->eip = (int) func;
+  np->tf->eip = (uint) func;
 
   //assign user stack
+  uint decr = 0;
+
   np->ustack = (char*) stack;
-  np->tf->esp = (int) ((np->ustack) + userStackSize);  //point esp to top of ustack
-  *(int*)(np->tf->esp) = (int) arg;
-  np->tf->esp = np->tf->esp - 4;
+  decr+=sizeof(uint);
+  *((uint*)(np->tf->esp-decr)) = 0xffffffff;
+  decr+=sizeof(uint);
+  *((uint*)(np->tf->esp-decr))= (uint) arg;
+  np->tf->esp-=decr;
 
 
   for(i = 0; i < NOFILE; i++)
@@ -535,9 +539,9 @@ int join(int pid, void **stack, void **retval){
       if(p->state == ZOMBIE){
         // Found one.
         //pid = p->pid;
-        kfree(p->kstack);
+        //kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        //freevm(p->pgdir);
         p->state = UNUSED;
         p->pid = 0;
         p->parent = 0;
@@ -547,6 +551,9 @@ int join(int pid, void **stack, void **retval){
         return 0;                   //return 0 if success, as specified in pdf
       }
     }
+
+    *stack = p->ustack;
+    *retval = p->retval;
 
     // No point waiting if we don't have any children.
     if(!havekids || proc->killed){
@@ -562,4 +569,7 @@ int join(int pid, void **stack, void **retval){
 
 //UNFINISHED
 int texit(void *retval){
+  cprintf("hello world");
+  proc->retval = retval;
+  exit();
 }

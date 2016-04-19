@@ -115,11 +115,25 @@ int sys_clone(void){
   if(argint(2, &stack) < 0)
     return -1;
     
+  cprintf("The value of func: %d arg: %d stack: %d\n", func, arg, stack);
+
   return clone((void *) func, (void *) arg, (void *) stack);
 }
 
 int sys_join(void){
+  int pid;
+  int stack;
+  int retval;
 
+  if(argint(0, &pid) < 0)
+    return -1;
+  if(argint(1, &stack) < 0)
+    return -1;
+  if(argint(2, &retval) < 0)
+    return -1;
+    
+
+  return join(pid, (void **)stack, (void **)retval);
 }
 
 int sys_texit(void){
