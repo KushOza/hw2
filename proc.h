@@ -1,6 +1,7 @@
 #include "spinlock.h"
 // Segments in proc->gdt.
 #define NSEGS     7
+#define userStackSize 4096
 
 // Per-CPU state
 struct cpu {

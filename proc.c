@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include <stdio.h>
 
 struct {
   struct spinlock lock;
@@ -142,6 +143,7 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
+
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
@@ -473,16 +475,20 @@ int clone(void *(*func) (void *), void *arg, void *stack){
     return -1;
 
   // Copy process state from p.
+  /*
   if((np->pgdir = copyuvm(proc->pgdir, proc->sz)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
     np->state = UNUSED;
     return -1;
   }
+  */
+  
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
   np->context = proc->context;
+  np->pgdir = np->parent->pgdir;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -492,6 +498,10 @@ int clone(void *(*func) (void *), void *arg, void *stack){
 
   //assign user stack
   np->ustack = (char*) stack;
+  np->tf->esp = (int) ((np->ustack) + userStackSize);  //point esp to top of ustack
+  *(int*)(np->tf->esp) = (int) arg;
+  np->tf->esp = np->tf->esp - 4;
+
 
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
@@ -552,43 +562,4 @@ int join(int pid, void **stack, void **retval){
 
 //UNFINISHED
 int texit(void *retval){
-  struct proc *p;
-  int fd;
-
-  if(proc == initproc)
-    panic("init exiting");
-
-  // Close all open files.
-  for(fd = 0; fd < NOFILE; fd++){
-    if(proc->ofile[fd]){
-      fileclose(proc->ofile[fd]);
-      proc->ofile[fd] = 0;
-    }
-  }
-
-  begin_op();
-  iput(proc->cwd);
-  end_op();
-  proc->cwd = 0;
-
-  acquire(&ptable.lock);
-
-  // Parent might be sleeping in wait().
-  wakeup1(proc->parent);
-
-  // Pass abandoned children to init.
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->parent == proc){
-      p->parent = initproc;
-      if(p->state == ZOMBIE)
-        wakeup1(initproc);
-    }
-  }
-
-  // Jump into the scheduler, never to return.
-  proc->state = ZOMBIE;
-  sched();
-  panic("zombie exit");
-
-  proc->retval = retval;
 }
