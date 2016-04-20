@@ -7,6 +7,8 @@
 #include "mmu.h"
 #include "proc.h"
 
+void texit(void* var);
+
 int
 sys_fork(void)
 {
@@ -102,3 +104,41 @@ sys_halt(void)
     outw(0xB004, 0x2000);
   return 0;
 }
+
+int sys_clone(void){
+  int func;
+  int arg;
+  int stack;
+  
+  if(argint(0, &func) < 0)
+    return -1;
+  if(argint(1, &arg) < 0)
+    return -1;
+  if(argint(2, &stack) < 0)
+    return -1;
+    
+  cprintf("The value of func: %d arg: %d stack: %d\n", func, arg, stack);
+  //texit((void*) 0);
+  return clone((void *) func, (void *) arg, (void *) stack);
+}
+
+int sys_join(void){
+  int pid;
+  int stack;
+  int retval;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  if(argint(1, &stack) < 0)
+    return -1;
+  if(argint(2, &retval) < 0)
+    return -1;
+    
+
+  return join(pid, (void **)stack, (void **)retval);
+}
+
+int sys_texit(void){
+
+}
+

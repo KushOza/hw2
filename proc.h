@@ -1,5 +1,7 @@
+#include "spinlock.h"
 // Segments in proc->gdt.
 #define NSEGS     7
+#define userStackSize 4096
 
 // Per-CPU state
 struct cpu {
@@ -19,6 +21,12 @@ struct cpu {
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
+struct mymutex {
+  int flag;
+  struct spinlock lock;
+
+  //cond_t c;
+};
 // Per-CPU variables, holding pointers to the
 // current cpu and to the current process.
 // The asm suffix tells gcc to use "%gs:0" to refer to cpu
@@ -66,6 +74,10 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  struct mymutex mutexTable[32]; // mutex table
+  void *retval;                 // return value
+  char *ustack;                // Bottom of user stack for this process
+  int isThread;
 };
 
 // Process memory is laid out contiguously, low addresses first:
