@@ -625,9 +625,9 @@ int join(int pid, void **stack, void **retval){
 int mutex_init(void)
 {
 	int i = 0;
-	for (; i < 32; i++)
+	for (; i < 32; i++)	//go through all mutexes, find first non-active mutex which will have locked = 0
 	{
-		if (proc->mutexTable[i]->locked == 0)
+		if (proc->mutexTable[i]->locked == 0)	//found non-active mutex
 		{
 			proc->mutexTable[i]->locked = 1;
 			return i;
@@ -639,7 +639,17 @@ int mutex_init(void)
 
 int mutex_destroy(int mutex_id)
 {
+	if (mutex_id > -1 && mutex_id < 32)		//must be valid mutex id
+	{
+		if (proc->mutexTable[mutex_id]->locked == 1)	//if mutex is active AND unlocked (cannot be locked)
+		{
+			proc->mutexTable[mutex_id]->locked = 0;
+			//return 0;
+			return mutex_id;	//return 0 or mutex id??
+		}
+	}
 
+	return -1;
 }
 
 int mutex_lock(int mutex_id)

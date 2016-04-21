@@ -21,11 +21,6 @@ struct cpu {
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
-struct mymutex {
-  int id;		//mutex id
-  struct spinlock lock;		//actual spinlock
-  int* locked;	//0 for not active, 1 for unlocked, 2 for locked
-
   //cond_t c;
 };
 // Per-CPU variables, holding pointers to the
@@ -59,6 +54,11 @@ struct context {
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+
+struct mymutex {
+  int id;		//mutex id
+  struct spinlock lock;		//actual spinlock
+  int* locked;	//0 for not active, 1 for unlocked, 2 for locked
 
 // Per-process state
 struct proc {
