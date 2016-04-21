@@ -12,8 +12,9 @@ int nextpid = 0;
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg)
 {
 	void* stack=malloc(4096);
-	thread->pid = nextpid++;
-	return clone((void *) start_routine, arg, stack);
+	//thread->pid = nextpid++;
+	thread->pid = clone((void *) start_routine, arg, stack);
+	return 0;
 }
 
 int pthread_join(pthread_t thread, void **retval)
