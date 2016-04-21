@@ -531,7 +531,7 @@ int clone(void *(*func) (void *), void *arg, void *stack){
     return -1;
   }
   */
-  np->isThread = 1;
+
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
@@ -585,7 +585,7 @@ int join(int pid, void **stack, void **retval){
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       //cprintf("hello world from join current thread is %d %p\n", p->pid, p->state);
-      if(p->parent != proc) //|| p->isThread)
+      if(p->parent != proc)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE && p->pid == pid){
@@ -620,4 +620,24 @@ int join(int pid, void **stack, void **retval){
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
+}
+
+int mutex_init(void)
+{
+
+}
+
+int mutex_destroy(int mutex_id)
+{
+
+}
+
+int mutex_lock(int mutex_id)
+{
+
+}
+
+int mutex_unlock(int mutex_id)
+{
+
 }

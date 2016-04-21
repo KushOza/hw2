@@ -77,7 +77,6 @@ struct proc {
   struct mymutex mutexTable[32]; // mutex table
   void *retval;                 // return value
   char *ustack;                // Bottom of user stack for this process
-  int isThread;
 };
 
 // Process memory is laid out contiguously, low addresses first:
