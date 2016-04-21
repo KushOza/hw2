@@ -146,3 +146,23 @@ int sys_texit(void){
   texit((void *) retval);
 }
 
+int sys_mutex_init(void)
+{
+
+}
+
+int sys_mutex_destroy(int mutex_id)
+{
+
+}
+
+int sys_mutex_lock(int mutex_id)
+{
+
+}
+
+int sys_mutex_unlock(int mutex_id)
+{
+
+}
+
