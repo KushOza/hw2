@@ -624,7 +624,17 @@ int join(int pid, void **stack, void **retval){
 
 int mutex_init(void)
 {
+	int i = 0;
+	for (; i < 32; i++)
+	{
+		if (proc->mutexTable[i]->locked == 0)
+		{
+			proc->mutexTable[i]->locked = 1;
+			return i;
+		}
+	}
 
+	return -1;
 }
 
 int mutex_destroy(int mutex_id)

@@ -22,8 +22,9 @@ extern struct cpu cpus[NCPU];
 extern int ncpu;
 
 struct mymutex {
-  int flag;
-  struct spinlock lock;
+  int id;		//mutex id
+  struct spinlock lock;		//actual spinlock
+  int* locked;	//0 for not active, 1 for unlocked, 2 for locked
 
   //cond_t c;
 };
