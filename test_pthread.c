@@ -21,7 +21,6 @@ void *thread(void *arg)
 		counter++;
 		sleep(0);
 	}
-
 	pthread_exit(arg);
 }
 
@@ -48,7 +47,7 @@ int main(int argc, char **argv)
 		*args[i] = i;
 	}
 
-	printf(1, "main: running with %d threads...\n", NUM_THREADS);
+	printf(1, "main: running with %d Threads...\n", NUM_THREADS);
 
 	// Start all children
 	for (i=0; i<NUM_THREADS; i++) {
