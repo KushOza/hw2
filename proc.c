@@ -23,12 +23,49 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-
-//UNFINISHED
-int texit(void *retval){
-  cprintf("hello world");
+void texit(void *retval)
+{
+  //cprintf("hello world its textit\n");
   proc->retval = retval;
-  exit();
+
+  //rest is exit code
+  struct proc *p;
+  int fd;
+
+  if(proc == initproc)
+    panic("init exiting");
+
+  // Close all open files.
+  for(fd = 0; fd < NOFILE; fd++){
+    if(proc->ofile[fd]){
+      fileclose(proc->ofile[fd]);
+      proc->ofile[fd] = 0;
+    }
+  }
+
+  begin_op();
+  iput(proc->cwd);
+  end_op();
+  proc->cwd = 0;
+
+  acquire(&ptable.lock);
+
+  // Parent might be sleeping in wait().
+  wakeup1(proc->parent);
+
+  // Pass abandoned children to init.
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->parent == proc){
+      p->parent = initproc;
+      if(p->state == ZOMBIE)
+        wakeup1(initproc);
+    }
+  }
+
+  // Jump into the scheduler, never to return.
+  proc->state = ZOMBIE;
+  sched();
+  panic("zombie exit");
 }
 
 void
@@ -477,6 +514,7 @@ procdump(void)
 }
 
 int clone(void *(*func) (void *), void *arg, void *stack){
+  //cprintf("hello world\n");
   int i, pid;
   struct proc *np; 
 
@@ -537,6 +575,7 @@ int clone(void *(*func) (void *), void *arg, void *stack){
 }
 
 int join(int pid, void **stack, void **retval){
+
   struct proc *p;
   int havekids;
 
@@ -545,13 +584,21 @@ int join(int pid, void **stack, void **retval){
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != proc || p->isThread)
+      //cprintf("hello world from join current thread is %d %p\n", p->pid, p->state);
+      if(p->parent != proc) //|| p->isThread)
         continue;
       havekids = 1;
-      if(p->state == ZOMBIE){
+      if(p->state == ZOMBIE && p->pid == pid){
         // Found one.
         //pid = p->pid;
-        //kfree(p->kstack);
+    	//cprintf("hello world from join current thread is %d %p\n", p->pid, p->state);
+
+    	//texit(*retval);
+
+        *stack = p->ustack;
+        *retval = p->retval;
+
+    	kfree(p->kstack);
         p->kstack = 0;
         //freevm(p->pgdir);
         p->state = UNUSED;
@@ -564,9 +611,6 @@ int join(int pid, void **stack, void **retval){
       }
     }
 
-    *stack = p->ustack;
-    *retval = p->retval;
-
     // No point waiting if we don't have any children.
     if(!havekids || proc->killed){
       release(&ptable.lock);
@@ -576,5 +620,4 @@ int join(int pid, void **stack, void **retval){
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
-
 }
