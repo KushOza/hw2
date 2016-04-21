@@ -18,11 +18,15 @@ struct cpu {
   struct proc *proc;           // The currently-running process.
 };
 
+typedef struct mutex{
+  int id;   //mutex id
+  struct spinlock lock;   //actual spinlock
+  int locked;  //0 for not active, 1 for unlocked, 2 for locked
+} mutex;
+
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
-  //cond_t c;
-};
 // Per-CPU variables, holding pointers to the
 // current cpu and to the current process.
 // The asm suffix tells gcc to use "%gs:0" to refer to cpu
@@ -55,11 +59,6 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
-struct mymutex {
-  int id;		//mutex id
-  struct spinlock lock;		//actual spinlock
-  int* locked;	//0 for not active, 1 for unlocked, 2 for locked
-
 // Per-process state
 struct proc {
   uint sz;                     // Size of process memory (bytes)
@@ -75,7 +74,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  struct mymutex mutexTable[32]; // mutex table
+  struct mutex mutexTable[32]; // mutex table
   void *retval;                 // return value
   char *ustack;                // Bottom of user stack for this process
 };
