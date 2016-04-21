@@ -20,6 +20,7 @@ int pthread_join(pthread_t thread, void **retval)
 {
 	void* stack=malloc(4096);
 	return join(thread.pid, (void **)stack, (void **)retval);
+
 }
 int pthread_exit(void *retval)
 {
