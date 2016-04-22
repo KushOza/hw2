@@ -534,6 +534,12 @@ int clone(void *(*func) (void *), void *arg, void *stack){
 
   np->sz = proc->sz;
   np->parent = proc;
+  //np->mutexTable = proc->mutexTable;	//doesn't work cuz i hate pointers
+  //use for loop to copy over values
+  for (i = 0; i < 32; i++)
+  {
+	  np->mutexTable[i] = proc->mutexTable[i];
+  }
   *np->tf = *proc->tf;
   //np->context = proc->context;
   np->pgdir = proc->pgdir;
@@ -656,6 +662,7 @@ int mutex_lock(int mutex_id)
 {
 	if (mutex_id > -1 && mutex_id < 32)		//must be valid mutex id
 	{
+		//change to proc->parent from proc and it works why
 		if (proc->parent->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
 		{
 			acquire(&(proc->parent->mutexTable[mutex_id].lock));
@@ -679,7 +686,7 @@ int mutex_unlock(int mutex_id)
 		if (proc->parent->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
 		{
 			acquire(&(proc->parent->mutexTable[mutex_id].lock));
-			proc->parent->mutexTable[mutex_id].locked = 1;
+			proc->parent->mutexTable[mutex_id].locked = 1;			//active but not locked
 			wakeup(proc->parent);
 			release(&(proc->parent->mutexTable[mutex_id].lock));
 			return 0;
