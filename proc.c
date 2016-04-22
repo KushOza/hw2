@@ -659,12 +659,9 @@ int mutex_lock(int mutex_id)
 		if (proc->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
 		{
 			acquire(&(proc->mutexTable[mutex_id].lock));
-			if (proc->mutexTable[mutex_id].locked == 2)		//if the mutex is locked, block current proc until mutex is unlocked
+			while (proc->mutexTable[mutex_id].locked == 2)	//if the mutex is locked, block current proc until mutex is unlocked
 			{
-				while (proc->mutexTable[mutex_id].locked == 2)
-				{
-					sleep(proc, &(proc->mutexTable[mutex_id].lock));
-				}
+				sleep(proc, &(proc->mutexTable[mutex_id].lock));
 			}
 			proc->mutexTable[mutex_id].locked = 2;
 			release(&(proc->mutexTable[mutex_id].lock));
