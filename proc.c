@@ -656,15 +656,15 @@ int mutex_lock(int mutex_id)
 {
 	if (mutex_id > -1 && mutex_id < 32)		//must be valid mutex id
 	{
-		if (proc->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
+		if (proc->parent->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
 		{
-			acquire(&(proc->mutexTable[mutex_id].lock));
-			while (proc->mutexTable[mutex_id].locked == 2)	//if the mutex is locked, block current proc until mutex is unlocked
+			acquire(&(proc->parent->mutexTable[mutex_id].lock));
+			while (proc->parent->mutexTable[mutex_id].locked == 2)	//if the mutex is locked, block current proc until mutex is unlocked
 			{
-				sleep(proc, &(proc->mutexTable[mutex_id].lock));
+				sleep(proc->parent, &(proc->parent->mutexTable[mutex_id].lock));
 			}
-			proc->mutexTable[mutex_id].locked = 2;
-			release(&(proc->mutexTable[mutex_id].lock));
+			proc->parent->mutexTable[mutex_id].locked = 2;
+			release(&(proc->parent->mutexTable[mutex_id].lock));
 			return 0;
 		}
 	}
@@ -676,12 +676,12 @@ int mutex_unlock(int mutex_id)
 {
 	if (mutex_id > -1 && mutex_id < 32)		//must be valid mutex id
 	{
-		if (proc->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
+		if (proc->parent->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
 		{
-			acquire(&(proc->mutexTable[mutex_id].lock));
-			proc->mutexTable[mutex_id].locked = 1;
-			wakeup(proc);
-			release(&(proc->mutexTable[mutex_id].lock));
+			acquire(&(proc->parent->mutexTable[mutex_id].lock));
+			proc->parent->mutexTable[mutex_id].locked = 1;
+			wakeup(proc->parent);
+			release(&(proc->parent->mutexTable[mutex_id].lock));
 			return 0;
 		}
 	}
