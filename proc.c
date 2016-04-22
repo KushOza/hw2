@@ -644,8 +644,8 @@ int mutex_destroy(int mutex_id)
 		if (proc->mutexTable[mutex_id].locked == 1)	//if mutex is active AND unlocked (cannot be locked)
 		{
 			proc->mutexTable[mutex_id].locked = 0;
-			//return 0;
-			return mutex_id;	//return 0 or mutex id??
+			return 0;
+			//return mutex_id;	//return 0 or mutex id??
 		}
 	}
 
@@ -654,10 +654,40 @@ int mutex_destroy(int mutex_id)
 
 int mutex_lock(int mutex_id)
 {
+	if (mutex_id > -1 && mutex_id < 32)		//must be valid mutex id
+	{
+		if (proc->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
+		{
+			acquire(&(proc->mutexTable[mutex_id].lock));
+			if (proc->mutexTable[mutex_id].locked == 2)		//if the mutex is locked, block current proc until mutex is unlocked
+			{
+				while (proc->mutexTable[mutex_id].locked == 2)
+				{
+					sleep(proc, &(proc->mutexTable[mutex_id].lock));
+				}
+			}
+			proc->mutexTable[mutex_id].locked = 2;
+			release(&(proc->mutexTable[mutex_id].lock));
+			return 0;
+		}
+	}
 
+	return -1;
 }
 
 int mutex_unlock(int mutex_id)
 {
+	if (mutex_id > -1 && mutex_id < 32)		//must be valid mutex id
+	{
+		if (proc->mutexTable[mutex_id].locked != 0)	//make sure mutex is active
+		{
+			acquire(&(proc->mutexTable[mutex_id].lock));
+			proc->mutexTable[mutex_id].locked = 1;
+			wakeup(proc);
+			release(&(proc->mutexTable[mutex_id].lock));
+			return 0;
+		}
+	}
 
+	return -1;
 }

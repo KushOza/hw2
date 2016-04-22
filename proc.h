@@ -18,12 +18,6 @@ struct cpu {
   struct proc *proc;           // The currently-running process.
 };
 
-typedef struct mutex{
-  int id;   //mutex id
-  struct spinlock lock;   //actual spinlock
-  int locked;  //0 for not active, 1 for unlocked, 2 for locked
-} mutex;
-
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
@@ -74,7 +68,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  struct mutex mutexTable[32]; // mutex table
+  struct pthread_mutex_t mutexTable[32]; // mutex table
   void *retval;                 // return value
   char *ustack;                // Bottom of user stack for this process
 };
